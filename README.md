@@ -15,7 +15,7 @@ AI-powered codebase exploration tool that helps developers onboard to new projec
 
 - **Frontend**: React + TypeScript + Vite + Tailwind CSS
 - **Backend**: Node.js + Express + TypeScript
-- **Database**: MongoDB
+- **Database**: Supabase (PostgreSQL)
 - **AI**: NVIDIA NIM (Llama 3.1 for chat, embeddings for search)
 - **Auth**: GitHub OAuth
 
@@ -24,7 +24,7 @@ AI-powered codebase exploration tool that helps developers onboard to new projec
 ### Prerequisites
 
 - Node.js 18+
-- MongoDB (local or Atlas)
+- Supabase account (free at supabase.com)
 - GitHub OAuth App
 - NVIDIA NIM API Key (free at build.nvidia.com)
 
@@ -46,7 +46,8 @@ cp .env.example server/.env
 Edit `server/.env` with your credentials:
 
 ```env
-MONGODB_URI=mongodb://localhost:27017/codecontext
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
 GITHUB_CLIENT_ID=your_github_client_id
 GITHUB_CLIENT_SECRET=your_github_client_secret
 NVIDIA_API_KEY=your_nvidia_api_key
@@ -89,10 +90,11 @@ codecontext/
 ├── server/                 # Express backend
 │   ├── src/
 │   │   ├── config/         # Configuration
-│   │   ├── models/         # MongoDB models
+│   │   ├── models/         # Database models
 │   │   ├── routes/         # API routes
 │   │   ├── services/       # Business logic
 │   │   └── middleware/     # Auth, error handling
+│   ├── supabase/           # Database migrations
 │   └── ...
 └── ...
 ```

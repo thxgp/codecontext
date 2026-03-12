@@ -7,6 +7,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Space Grotesk"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+      },
       colors: {
         // Dark Theme - Clean Dark (Booming-inspired)
         dark: {
@@ -42,18 +45,18 @@ export default {
           800: '#9a3412',
           900: '#7c2d12',
         },
-        // Light Theme - Clean white with warm accents
+        // Light Theme - Warm cream tones
         light: {
-          50: '#ffffff',   // Pure white bg
-          100: '#fafafa',  // Subtle bg
-          200: '#f5f5f5',  // Cards
-          300: '#e5e5e5',  // Borders
-          400: '#a3a3a3',  // Muted text
-          500: '#737373',  // Secondary text
-          600: '#525252',  // Primary text
-          700: '#404040',  // Headings
-          800: '#262626',  // Dark text
-          900: '#171717',  // Darkest text
+          50: '#FFFDF8',   // Cream white bg
+          100: '#FDF9F3',  // Subtle cream bg
+          200: '#FAF5ED',  // Cards
+          300: '#E8E2D9',  // Borders
+          400: '#A39E95',  // Muted text
+          500: '#737069',  // Secondary text
+          600: '#525049',  // Primary text
+          700: '#403E38',  // Headings
+          800: '#262523',  // Dark text
+          900: '#171614',  // Darkest text
         }
       },
       animation: {

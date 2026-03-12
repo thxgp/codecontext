@@ -6,11 +6,25 @@
   box-sizing: border-box;
 }
 
-body {
+/* Warm night light filter for eye protection — applied per-page, not on landing */
+.warm-filter {
+  filter: sepia(0.08) saturate(1.1) brightness(0.98);
+}
+
+html, body {
+  overscroll-behavior: none;
+  height: 100%;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+body {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100%;
 }
 
 /* Theme base styles */
@@ -28,13 +42,13 @@ body {
 }
 
 .light {
-  --bg-primary: #ffffff;
-  --bg-secondary: #fafafa;
-  --bg-elevated: #f5f5f5;
-  --text-primary: #171717;
-  --text-secondary: #525252;
-  --text-muted: #737373;
-  --border-color: rgba(0, 0, 0, 0.08);
+  --bg-primary: #FFFDF8;
+  --bg-secondary: #FDF9F3;
+  --bg-elevated: #FAF5ED;
+  --text-primary: #171614;
+  --text-secondary: #525049;
+  --text-muted: #737069;
+  --border-color: rgba(38, 37, 35, 0.1);
   --accent-primary: #f97316;
   --accent-secondary: #ea580c;
   --glow-color: rgba(249, 115, 22, 0.15);
@@ -126,8 +140,8 @@ pre {
   }
 
   /* Light gradient text */
-  .light .gradient-text {
-    background: linear-gradient(135deg, #ea580c, #f97316, #fb923c);
+  .gradient-text {
+    background: linear-gradient(135deg, #c2410c, #ea580c, #f97316);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -220,6 +234,26 @@ button, a, input, textarea {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Lab background pattern */
+.lab-bg {
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+.light .lab-bg {
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.04) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+.lab-bg::before {
+  overflow: hidden;
+  max-width: 100vw;
+  max-height: 100vh;
+  box-sizing: border-box;
+}
+
 /* Dark theme body */
 .dark body {
   background-color: #0a0a0a;
@@ -228,6 +262,6 @@ button, a, input, textarea {
 
 /* Light theme body */
 .light body {
-  background-color: #ffffff;
+  background-color: #FFFDF8;
   color: #171717;
 }

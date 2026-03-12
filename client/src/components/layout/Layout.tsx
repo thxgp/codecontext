@@ -6,9 +6,9 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="min-h-screen dark:bg-dark-900 bg-light-50 flex flex-col transition-colors duration-200">
+    <div className="fixed inset-0 dark:bg-dark-900 bg-light-50 flex flex-col overflow-hidden transition-colors duration-200">
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {children}
       </main>
     </div>

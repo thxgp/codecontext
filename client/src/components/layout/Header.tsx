@@ -8,7 +8,7 @@ export default function Header() {
   const location = useLocation();
 
   return (
-    <header className="h-16 glass px-6 flex items-center justify-between sticky top-0 z-50">
+    <header className="h-16 shrink-0 glass px-6 flex items-center justify-between z-50">
       <div className="flex items-center gap-8">
         <Link to="/dashboard" className="flex items-center gap-2.5 group">
           <span className="text-xl font-bold gradient-text">CodeContext</span>

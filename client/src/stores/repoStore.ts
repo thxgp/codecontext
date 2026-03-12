@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Repository, FileTreeNode, FileNode, ChatMessage } from '../types';
+import { Repository, FileTreeNode, FileNode, ChatMessage, ChatSession } from '../types';
 import { repoService, aiService } from '../services';
 
 interface RepoState {
@@ -8,8 +8,11 @@ interface RepoState {
   fileTree: FileTreeNode | FileTreeNode[] | null;
   selectedFile: FileNode | null;
   chatMessages: ChatMessage[];
+  chatSessions: ChatSession[];
+  activeSessionId: string | null;
   isLoading: boolean;
   isChatLoading: boolean;
+  abortController: AbortController | null;
 
   // Actions
   fetchRepos: () => Promise<void>;
@@ -19,19 +22,25 @@ interface RepoState {
   importRepo: (url: string) => Promise<Repository>;
   deleteRepo: (id: string) => Promise<void>;
   askQuestion: (repoId: string, question: string) => Promise<void>;
-  fetchChatHistory: (repoId: string) => Promise<void>;
-  clearChat: (repoId: string) => Promise<void>;
+  abortGeneration: () => void;
+  fetchSessions: (repoId: string) => Promise<void>;
+  selectSession: (repoId: string, sessionId: string) => Promise<void>;
+  newChat: () => void;
+  deleteSession: (repoId: string, sessionId: string) => Promise<void>;
   clearCurrentRepo: () => void;
 }
 
-export const useRepoStore = create<RepoState>((set, _get) => ({
+export const useRepoStore = create<RepoState>((set, get) => ({
   repos: [],
   currentRepo: null,
   fileTree: null,
   selectedFile: null,
   chatMessages: [],
+  chatSessions: [],
+  activeSessionId: null,
   isLoading: false,
   isChatLoading: false,
+  abortController: null,
 
   fetchRepos: async () => {
     set({ isLoading: true });
@@ -83,9 +92,9 @@ export const useRepoStore = create<RepoState>((set, _get) => ({
   },
 
   askQuestion: async (repoId: string, question: string) => {
-    set({ isChatLoading: true });
+    const controller = new AbortController();
+    set({ isChatLoading: true, abortController: controller });
     
-    // Add user message immediately
     const userMessage: ChatMessage = {
       role: 'user',
       content: question,
@@ -98,36 +107,94 @@ export const useRepoStore = create<RepoState>((set, _get) => ({
     }));
 
     try {
-      const response = await aiService.ask(repoId, question);
+      const { activeSessionId } = get();
+      const response = await aiService.ask(repoId, question, activeSessionId || undefined, controller.signal);
       
       const assistantMessage: ChatMessage = {
         role: 'assistant',
         content: response.answer,
-        referencedFiles: (response.referencedFiles || []).map((f: any) =>
+        referencedFiles: (response.referencedFiles || []).map((f: string | { path: string }) =>
           typeof f === 'string' ? f : f.path
         ),
         timestamp: new Date().toISOString()
       };
       
-      set((state) => ({
-        chatMessages: [...state.chatMessages, assistantMessage]
-      }));
-    } catch (error) {
-      // Remove user message on error
+      // If this was a new session (no activeSessionId), store the returned sessionId
+      if (!activeSessionId && response.sessionId) {
+        set((state) => ({
+          activeSessionId: response.sessionId,
+          chatMessages: [...state.chatMessages, assistantMessage],
+          chatSessions: [
+            {
+              sessionId: response.sessionId,
+              title: question.length > 60 ? question.slice(0, 57) + '...' : question,
+              updatedAt: new Date().toISOString(),
+            },
+            ...state.chatSessions,
+          ],
+        }));
+      } else {
+        set((state) => ({
+          chatMessages: [...state.chatMessages, assistantMessage],
+          chatSessions: state.chatSessions.map((s) =>
+            s.sessionId === activeSessionId
+              ? { ...s, updatedAt: new Date().toISOString() }
+              : s
+          ),
+        }));
+      }
+    } catch (error: any) {
+      if (error?.name === 'CanceledError' || error?.message?.includes('aborted')) {
+        console.log('Chat generation aborted');
+        // Do not remove the user's message so they can see what they asked and edit/retry
+        return;
+      }
       set((state) => ({
         chatMessages: state.chatMessages.slice(0, -1)
       }));
       throw error;
     } finally {
-      set({ isChatLoading: false });
+      set({ isChatLoading: false, abortController: null });
     }
   },
 
-  fetchChatHistory: async (repoId: string) => {
+  abortGeneration: () => {
+    const { abortController } = get();
+    if (abortController) {
+      abortController.abort();
+      set({ abortController: null, isChatLoading: false });
+    }
+  },
+
+  fetchSessions: async (repoId: string) => {
     try {
-      const messages = await aiService.getChatHistory(repoId);
-      // Normalize snake_case from DB to camelCase
-      const normalized = (messages || []).map((m: any) => ({
+      const sessions = await aiService.getSessions(repoId);
+      set({ chatSessions: sessions });
+      
+      // Auto-select the most recent session if none is active
+      if (sessions.length > 0 && !get().activeSessionId) {
+        const latest = sessions[0];
+        set({ activeSessionId: latest.sessionId });
+        // Load its messages
+        const messages = await aiService.getChatHistory(repoId, latest.sessionId);
+        const normalized = (messages || []).map((m: ChatMessage & { referenced_files?: string[] }) => ({
+          role: m.role,
+          content: m.content,
+          referencedFiles: m.referencedFiles || m.referenced_files || [],
+          timestamp: m.timestamp,
+        }));
+        set({ chatMessages: normalized });
+      }
+    } catch (error) {
+      console.error('Failed to fetch sessions:', error);
+    }
+  },
+
+  selectSession: async (repoId: string, sessionId: string) => {
+    set({ activeSessionId: sessionId, chatMessages: [] });
+    try {
+      const messages = await aiService.getChatHistory(repoId, sessionId);
+      const normalized = (messages || []).map((m: ChatMessage & { referenced_files?: string[] }) => ({
         role: m.role,
         content: m.content,
         referencedFiles: m.referencedFiles || m.referenced_files || [],
@@ -135,13 +202,45 @@ export const useRepoStore = create<RepoState>((set, _get) => ({
       }));
       set({ chatMessages: normalized });
     } catch (error) {
-      console.error('Failed to fetch chat history:', error);
+      console.error('Failed to load session messages:', error);
     }
   },
 
-  clearChat: async (repoId: string) => {
-    await aiService.clearChatHistory(repoId);
-    set({ chatMessages: [] });
+  newChat: () => {
+    set({ activeSessionId: null, chatMessages: [] });
+  },
+
+  deleteSession: async (repoId: string, sessionId: string) => {
+    try {
+      await aiService.deleteSession(repoId, sessionId);
+    } catch (error) {
+      console.error('Failed to delete session on server:', error);
+    }
+    set((state) => {
+      const remaining = state.chatSessions.filter((s) => s.sessionId !== sessionId);
+      const wasActive = state.activeSessionId === sessionId;
+      return {
+        chatSessions: remaining,
+        activeSessionId: wasActive ? (remaining[0]?.sessionId || null) : state.activeSessionId,
+        chatMessages: wasActive ? [] : state.chatMessages,
+      };
+    });
+    // If we deleted the active session and there's a replacement, load its messages
+    const { activeSessionId } = get();
+    if (activeSessionId) {
+      try {
+        const messages = await aiService.getChatHistory(repoId, activeSessionId);
+        const normalized = (messages || []).map((m: ChatMessage & { referenced_files?: string[] }) => ({
+          role: m.role,
+          content: m.content,
+          referencedFiles: m.referencedFiles || m.referenced_files || [],
+          timestamp: m.timestamp,
+        }));
+        set({ chatMessages: normalized });
+      } catch {
+        // Ignore — messages will be empty
+      }
+    }
   },
 
   clearCurrentRepo: () => {
@@ -149,7 +248,9 @@ export const useRepoStore = create<RepoState>((set, _get) => ({
       currentRepo: null, 
       fileTree: null, 
       selectedFile: null,
-      chatMessages: [] 
+      chatMessages: [],
+      chatSessions: [],
+      activeSessionId: null,
     });
   }
 }));

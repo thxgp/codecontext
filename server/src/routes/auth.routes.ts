@@ -41,72 +41,38 @@ router.get('/github/callback', async (req: Request, res: Response) => {
       return res.redirect(`${config.clientUrl}/auth/error?message=Failed to get access token`);
     }
 
-    // Get user info from GitHub
-    const userResponse = await axios.get('https://api.github.com/user', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+    // Fetch user info and emails in parallel
+    const authHeaders = { Authorization: `Bearer ${accessToken}` };
+    const [userResponse, emailsResponse] = await Promise.all([
+      axios.get('https://api.github.com/user', { headers: authHeaders }),
+      axios.get('https://api.github.com/user/emails', { headers: authHeaders }).catch(() => null),
+    ]);
 
     const githubUser = userResponse.data;
-
-    // Get user email if not public
     let email = githubUser.email;
-    if (!email) {
-      try {
-        const emailsResponse = await axios.get('https://api.github.com/user/emails', {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        const primaryEmail = emailsResponse.data.find((e: { primary: boolean }) => e.primary);
-        email = primaryEmail?.email || null;
-      } catch {
-        // Email fetch failed, continue without it
-      }
+    if (!email && emailsResponse) {
+      const primaryEmail = emailsResponse.data.find((e: { primary: boolean }) => e.primary);
+      email = primaryEmail?.email || null;
     }
 
-    // Upsert user in Supabase
-    const { data: existingUser } = await supabase
+    // Single upsert — no separate select needed
+    const { data: user, error } = await supabase
       .from('users')
-      .select('*')
-      .eq('github_id', String(githubUser.id))
-      .single<User>();
-
-    let user: User;
-
-    if (existingUser) {
-      // Update existing user
-      const { data: updatedUser, error } = await supabase
-        .from('users')
-        .update({
-          username: githubUser.login,
-          email,
-          avatar: githubUser.avatar_url,
-          access_token: accessToken,
-        })
-        .eq('id', existingUser.id)
-        .select()
-        .single<User>();
-
-      if (error || !updatedUser) {
-        throw new Error('Failed to update user');
-      }
-      user = updatedUser;
-    } else {
-      // Create new user
-      const { data: newUser, error } = await supabase
-        .from('users')
-        .insert({
+      .upsert(
+        {
           github_id: String(githubUser.id),
           username: githubUser.login,
           email,
           avatar: githubUser.avatar_url,
           access_token: accessToken,
-        })
-        .select()
-        .single<User>();
+        },
+        { onConflict: 'github_id' }
+      )
+      .select()
+      .single<User>();
 
-      if (error || !newUser) {
-        throw new Error('Failed to create user');
-      }
-      user = newUser;
+    if (error || !user) {
+      throw new Error('Failed to upsert user');
     }
 
     // Generate JWT

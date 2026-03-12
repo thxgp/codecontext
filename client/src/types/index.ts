@@ -59,4 +59,11 @@ export interface AskResponse {
     language: string;
     summary: string;
   }>;
+  sessionId: string;
+}
+
+export interface ChatSession {
+  sessionId: string;
+  title: string;
+  updatedAt: string;
 }

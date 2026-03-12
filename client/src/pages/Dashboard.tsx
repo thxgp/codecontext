@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, ExternalLink, Trash2 } from 'lucide-react';
 import { useRepoStore } from '../stores/repoStore';
-import { Button, Input, StatusBadge } from '../components/ui';
+import { Button, Input, StatusBadge, CursorGlow } from '../components/ui';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -42,7 +42,9 @@ export default function Dashboard() {
   };
 
   return (
+    <div className="warm-filter h-full w-full dark:bg-dark-900 bg-light-50 overflow-y-auto">
     <div className="max-w-6xl mx-auto px-6 py-8">
+      <CursorGlow />
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold dark:text-white text-light-900">Your Repositories</h1>
@@ -152,6 +154,7 @@ export default function Dashboard() {
           ))}
         </div>
       )}
+    </div>
     </div>
   );
 }

@@ -8,7 +8,14 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: config.clientUrl,
+  origin: (origin, callback) => {
+    const allowed = [config.clientUrl, config.clientUrl.replace('https://', 'https://www.')];
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());

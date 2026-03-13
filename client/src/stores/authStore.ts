@@ -18,7 +18,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   isLoading: true,
 
   login: () => {
-    window.location.href = '/api/auth/github';
+    const apiUrl = import.meta.env.VITE_API_URL || '/api';
+    window.location.href = `${apiUrl}/auth/github`;
   },
 
   logout: () => {

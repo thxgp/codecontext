@@ -7,7 +7,6 @@ services:
     name: codecontext-api
     runtime: node
     region: oregon
-    plan: free
     rootDir: server
     buildCommand: npm install && npm run build
     startCommand: npm start
@@ -38,7 +37,6 @@ services:
   - type: web
     name: codecontext-web
     runtime: static
-    plan: free
     rootDir: client
     buildCommand: npm install && npm run build
     staticPublishPath: dist

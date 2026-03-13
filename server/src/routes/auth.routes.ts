@@ -56,6 +56,7 @@ router.get('/github/callback', async (req: Request, res: Response) => {
     }
 
     // Single upsert — no separate select needed
+    console.log('Attempting upsert for github_id:', String(githubUser.id), 'username:', githubUser.login);
     const { data: user, error } = await supabase
       .from('users')
       .upsert(
@@ -72,7 +73,9 @@ router.get('/github/callback', async (req: Request, res: Response) => {
       .single<User>();
 
     if (error || !user) {
-      throw new Error('Failed to upsert user');
+      console.error('Supabase upsert error:', JSON.stringify(error, null, 2));
+      console.error('Supabase upsert data:', JSON.stringify(user, null, 2));
+      throw new Error(`Failed to upsert user: ${error?.message || 'no data returned'}`);
     }
 
     // Generate JWT
@@ -84,9 +87,11 @@ router.get('/github/callback', async (req: Request, res: Response) => {
 
     // Redirect to client with token
     res.redirect(`${config.clientUrl}/auth/callback?token=${token}`);
-  } catch (error) {
-    console.error('GitHub OAuth error:', error);
-    res.redirect(`${config.clientUrl}/auth/error?message=Authentication failed`);
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : String(error);
+    console.error('GitHub OAuth error:', errMsg);
+    console.error('Full error:', error);
+    res.redirect(`${config.clientUrl}/auth/error?message=${encodeURIComponent(errMsg)}`);
   }
 });
 

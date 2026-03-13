@@ -1,38 +1,57 @@
+<div align="center">
+
 # CodeContext
 
 **Understand any codebase in hours, not weeks.**
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-codecontext.tech-f97316?style=for-the-badge)](https://www.codecontext.tech)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+
 AI-powered codebase exploration tool that helps developers onboard to new projects faster.
+
+<img src="docs/screenshots/landing-desktop.png" alt="CodeContext Desktop" width="100%" />
+
+<img src="docs/screenshots/landing-mobile.png" alt="CodeContext Mobile" width="280" />
+
+</div>
+
+---
 
 ## Features
 
-- **AI Q&A**: Ask questions like "Where is authentication handled?" and get instant answers with file references
-- **Visual File Tree**: Interactive codebase explorer with AI-generated summaries
-- **Architecture Detection**: Auto-detect frameworks, patterns, and structure
-- **Powered by NVIDIA NIM**: Free AI APIs (Llama 3.1 70B)
+- **AI Q&A** — Ask questions like "Where is authentication handled?" and get instant answers with file references
+- **Visual File Tree** — Interactive codebase explorer with AI-generated summaries
+- **Architecture Detection** — Auto-detect frameworks, patterns, and structure
+- **Powered by NVIDIA NIM** — Free AI APIs (Llama 3.1 70B)
 
 ## Tech Stack
 
-- **Frontend**: React + TypeScript + Vite + Tailwind CSS
-- **Backend**: Node.js + Express + TypeScript
-- **Database**: Supabase (PostgreSQL)
-- **AI**: NVIDIA NIM (Llama 3.1 for chat, embeddings for search)
-- **Auth**: GitHub OAuth
+| Layer | Technologies |
+|-------|-------------|
+| **Frontend** | React, TypeScript, Vite, Tailwind CSS |
+| **Backend** | Node.js, Express, TypeScript |
+| **Database** | Supabase (PostgreSQL) |
+| **AI** | NVIDIA NIM (Llama 3.1 for chat, embeddings for search) |
+| **Auth** | GitHub OAuth |
+| **Hosting** | Render |
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- Supabase account (free at supabase.com)
+- Supabase account (free at [supabase.com](https://supabase.com))
 - GitHub OAuth App
-- NVIDIA NIM API Key (free at build.nvidia.com)
+- NVIDIA NIM API Key (free at [build.nvidia.com](https://build.nvidia.com))
 
 ### Setup
 
 1. **Clone and install dependencies:**
 
 ```bash
+git clone https://github.com/thxgp/codecontext.git
 cd codecontext
 npm run install:all
 ```
@@ -102,21 +121,21 @@ codecontext/
 ## API Endpoints
 
 ### Auth
-- `GET /api/auth/github` - Initiate OAuth
-- `GET /api/auth/me` - Get current user
+- `GET /api/auth/github` — Initiate OAuth
+- `GET /api/auth/me` — Get current user
 
 ### Repositories
-- `GET /api/repos` - List imported repos
-- `POST /api/repos` - Import new repo
-- `GET /api/repos/:id` - Get repo details
-- `GET /api/repos/:id/structure` - Get file tree
-- `DELETE /api/repos/:id` - Delete repo
+- `GET /api/repos` — List imported repos
+- `POST /api/repos` — Import new repo
+- `GET /api/repos/:id` — Get repo details
+- `GET /api/repos/:id/structure` — Get file tree
+- `DELETE /api/repos/:id` — Delete repo
 
 ### AI
-- `POST /api/ai/:repoId/ask` - Ask question about codebase
-- `GET /api/ai/:repoId/search` - Search files
-- `GET /api/ai/:repoId/chat` - Get chat history
+- `POST /api/ai/:repoId/ask` — Ask question about codebase
+- `GET /api/ai/:repoId/search` — Search files
+- `GET /api/ai/:repoId/chat` — Get chat history
 
 ## License
 
-MIT
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

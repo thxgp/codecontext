@@ -3,6 +3,7 @@ import cors from 'cors';
 import { config } from './config/index.js';
 import { errorHandler } from './middleware/index.js';
 import { authRoutes, reposRoutes, aiRoutes } from './routes/index.js';
+import { supabase } from './config/supabase.js';
 
 const app = express();
 
@@ -23,6 +24,32 @@ app.use(express.json());
 // Health check
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Diagnostic endpoint — temporary, remove after debugging
+app.get('/debug/supabase', async (_req, res) => {
+  const url = config.supabase.url;
+  const keyPreview = config.supabase.anonKey
+    ? `${config.supabase.anonKey.slice(0, 20)}...${config.supabase.anonKey.slice(-10)}`
+    : 'NOT SET';
+
+  try {
+    const { data, error } = await supabase.from('users').select('id').limit(1);
+    res.json({
+      supabaseUrl: url || 'NOT SET',
+      anonKeyPreview: keyPreview,
+      anonKeyLength: config.supabase.anonKey?.length || 0,
+      testQuery: error ? { error: error.message, code: error.code, details: error.details } : { success: true, rows: data?.length },
+    });
+  } catch (err: unknown) {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    res.json({
+      supabaseUrl: url || 'NOT SET',
+      anonKeyPreview: keyPreview,
+      anonKeyLength: config.supabase.anonKey?.length || 0,
+      testQuery: { error: errMsg },
+    });
+  }
 });
 
 // Routes

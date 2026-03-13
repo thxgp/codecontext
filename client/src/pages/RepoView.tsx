@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, RefreshCw, Search, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Search, PanelLeftClose, PanelLeftOpen, FolderTree, X as XIcon } from 'lucide-react';
 import { useRepoStore } from '../stores/repoStore';
 import { Button, StatusBadge } from '../components/ui';
 import { FileTree, CodeViewer } from '../components/repo';
@@ -25,6 +25,7 @@ export default function RepoView() {
   
   const [activeTab, setActiveTab] = useState<'files' | 'chat'>('chat');
   const [fileSearch, setFileSearch] = useState('');
+  const [mobileFilesOpen, setMobileFilesOpen] = useState(false);
   
   const MIN_SIDEBAR_WIDTH = 200;
   const MAX_SIDEBAR_WIDTH = 480;
@@ -58,6 +59,7 @@ export default function RepoView() {
   const handleFileSelect = (path: string) => {
     if (id) {
       fetchFile(id, path);
+      setMobileFilesOpen(false);
     }
   };
 
@@ -182,20 +184,20 @@ export default function RepoView() {
   return (
     <div className="warm-filter h-full flex flex-col dark:bg-dark-950 bg-light-50 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b dark:border-neon-cyan/10 border-light-300 dark:bg-dark-900/50 bg-white/50 backdrop-blur-sm shrink-0">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between px-3 py-3 sm:px-6 sm:py-4 border-b dark:border-neon-cyan/10 border-light-300 dark:bg-dark-900/50 bg-white/50 backdrop-blur-sm shrink-0">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
           <button
             onClick={() => navigate('/dashboard')}
-            className="p-2 dark:text-dark-400 text-light-500 dark:hover:text-neon-cyan hover:text-light-700 dark:hover:bg-neon-cyan/10 hover:bg-light-200 rounded-lg transition-all"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center dark:text-dark-400 text-light-500 dark:hover:text-neon-cyan hover:text-light-700 dark:hover:bg-neon-cyan/10 hover:bg-light-200 rounded-lg transition-all shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl font-semibold dark:text-white text-light-900 tracking-tight">{currentRepo.full_name}</h1>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <h1 className="text-base sm:text-xl font-semibold dark:text-white text-light-900 tracking-tight truncate">{currentRepo.full_name}</h1>
               <StatusBadge status={currentRepo.status} />
             </div>
-            <div className="flex items-center gap-2 mt-1.5">
+            <div className="hidden sm:flex items-center gap-2 mt-1.5">
               {(currentRepo.frameworks || []).map((f, i) => (
                 <span
                   key={i}
@@ -209,21 +211,29 @@ export default function RepoView() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Mobile file drawer toggle */}
+          <button
+            onClick={() => setMobileFilesOpen(true)}
+            className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center dark:text-dark-400 text-light-500 dark:hover:text-neon-cyan hover:text-light-700 dark:hover:bg-neon-cyan/10 hover:bg-light-200 rounded-lg transition-all"
+            title="Browse files"
+          >
+            <FolderTree className="w-5 h-5" />
+          </button>
           <div className="flex dark:bg-dark-800/80 bg-light-200 rounded-xl p-1 dark:border-neon-cyan/10 border-light-300 border">
             <button
               onClick={() => setActiveTab('chat')}
-              className={`px-5 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              className={`px-3 py-1.5 sm:px-5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === 'chat'
                   ? 'dark:bg-neon-cyan/20 bg-light-600 dark:text-neon-cyan text-white shadow-sm dark:shadow-neon-cyan/20'
                   : 'dark:text-dark-400 text-light-500 dark:hover:text-white hover:text-light-800'
               }`}
             >
-              AI Chat
+              Chat
             </button>
             <button
               onClick={() => setActiveTab('files')}
-              className={`px-5 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              className={`px-3 py-1.5 sm:px-5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === 'files'
                   ? 'dark:bg-neon-cyan/20 bg-light-600 dark:text-neon-cyan text-white shadow-sm dark:shadow-neon-cyan/20'
                   : 'dark:text-dark-400 text-light-500 dark:hover:text-white hover:text-light-800'
@@ -237,7 +247,7 @@ export default function RepoView() {
 
       {/* Processing state */}
       {(currentRepo.status === 'pending' || currentRepo.status === 'processing') && (
-        <div className="relative overflow-hidden dark:border-neon-cyan/20 border-light-400 border-b px-6 py-3 flex items-center gap-3 shrink-0">
+        <div className="relative overflow-hidden dark:border-neon-cyan/20 border-light-400 border-b px-3 py-2 sm:px-6 sm:py-3 flex items-center gap-3 shrink-0">
           <div className="absolute inset-0 dark:bg-gradient-to-r dark:from-neon-cyan/10 dark:via-neon-magenta/10 dark:to-neon-cyan/10 bg-gradient-to-r from-light-400/20 via-light-600/20 to-light-400/20 animate-pulse-glow" />
           <RefreshCw className="w-5 h-5 dark:text-neon-cyan text-light-600 animate-spin relative" />
           <span className="dark:text-neon-cyan text-light-700 text-sm font-medium relative">
@@ -248,9 +258,9 @@ export default function RepoView() {
 
       {/* Main content */}
       <div className="flex-1 flex min-h-0 overflow-hidden">
-        {/* Sidebar - File Tree */}
+        {/* Sidebar - File Tree (hidden on mobile) */}
         <div
-          className="border-r dark:border-neon-cyan/10 border-light-300 overflow-y-auto dark:bg-dark-900/30 bg-white/30 shrink-0"
+          className="hidden md:block border-r dark:border-neon-cyan/10 border-light-300 overflow-y-auto dark:bg-dark-900/30 bg-white/30 shrink-0"
           style={{
             width: isCollapsed ? 0 : sidebarWidth,
             minWidth: isDragging ? 0 : (isCollapsed ? 0 : MIN_SIDEBAR_WIDTH),
@@ -302,9 +312,9 @@ export default function RepoView() {
           </div>
         </div>
 
-        {/* Drag handle */}
+        {/* Drag handle (hidden on mobile) */}
         <div
-          className={`relative shrink-0 group cursor-col-resize ${isDragging ? 'z-50' : 'z-10'}`}
+          className={`hidden md:block relative shrink-0 group cursor-col-resize ${isDragging ? 'z-50' : 'z-10'}`}
           onMouseDown={handleMouseDown}
           onDoubleClick={toggleSidebar}
         >
@@ -324,11 +334,11 @@ export default function RepoView() {
         {/* Main panel */}
         <div className="flex-1 flex min-w-0 min-h-0 overflow-hidden">
           {activeTab === 'chat' ? (
-            <div className="flex-1 p-4 min-w-0 min-h-0 overflow-hidden">
+            <div className="flex-1 p-2 sm:p-4 min-w-0 min-h-0 overflow-hidden">
               <ChatPanel repoId={id!} onFileClick={handleChatFileClick} />
             </div>
           ) : selectedFile ? (
-            <div className="flex-1 p-4 min-w-0 min-h-0">
+            <div className="flex-1 p-2 sm:p-4 min-w-0 min-h-0">
               <CodeViewer
                 file={selectedFile}
                 onClose={() => useRepoStore.setState({ selectedFile: null })}
@@ -347,6 +357,65 @@ export default function RepoView() {
           )}
         </div>
       </div>
+
+      {/* Mobile file drawer overlay */}
+      {mobileFilesOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileFilesOpen(false)} />
+          {/* Drawer */}
+          <div className="relative w-[85vw] max-w-[360px] h-full dark:bg-dark-900 bg-white overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b dark:border-neon-cyan/10 border-light-300">
+              <h3 className="text-sm font-semibold uppercase tracking-wider dark:text-dark-400 text-light-500">Files</h3>
+              <button
+                onClick={() => setMobileFilesOpen(false)}
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center dark:text-dark-400 text-light-500 dark:hover:text-white hover:text-light-800 rounded-lg transition-colors"
+              >
+                <XIcon className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4 pb-2">
+              <div className="relative mb-3">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 dark:text-dark-500 text-light-500" />
+                <input
+                  type="text"
+                  placeholder="Search files..."
+                  value={fileSearch}
+                  onChange={(e) => setFileSearch(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 text-sm rounded-lg dark:bg-dark-800/50 bg-light-100 dark:border-neon-cyan/10 border-light-300 border dark:text-white text-light-900 dark:placeholder-dark-500 placeholder-light-500 focus:outline-none dark:focus:border-neon-cyan/30 focus:border-light-500 transition-colors"
+                />
+              </div>
+            </div>
+            <div className="px-2 pb-4">
+              {displayedFileTree && displayedFileTree.length > 0 ? (
+                displayedFileTree
+                  .sort((a, b) => {
+                    if (a.type !== b.type) return a.type === 'directory' ? -1 : 1;
+                    return a.name.localeCompare(b.name);
+                  })
+                  .map((child, i) => (
+                    <FileTree
+                      key={child.path || i}
+                      node={child}
+                      onFileSelect={handleFileSelect}
+                      selectedPath={selectedFile?.path}
+                    />
+                  ))
+              ) : fileSearch ? (
+                <div className="px-3 py-4 text-center">
+                  <p className="text-sm dark:text-dark-500 text-light-500">No files match "{fileSearch}"</p>
+                </div>
+              ) : (
+                <div className="px-3 py-2">
+                  <div className="h-4 w-24 dark:bg-dark-700/50 bg-light-200 rounded animate-pulse" />
+                  <div className="h-4 w-32 dark:bg-dark-700/50 bg-light-200 rounded animate-pulse mt-2" />
+                  <div className="h-4 w-20 dark:bg-dark-700/50 bg-light-200 rounded animate-pulse mt-2" />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -190,7 +190,7 @@ export default function ChatPanel({ repoId, onFileClick }: ChatPanelProps) {
     <div className="h-full w-full min-h-0 min-w-0 flex flex-col dark:bg-dark-900/50 bg-light-50 rounded-xl border dark:border-white/[0.06] border-light-300 overflow-hidden shadow-sm dark:shadow-none relative">
       {/* Header */}
       <motion.div
-        className="flex items-center justify-between px-6 py-4 border-b dark:border-white/[0.06] border-light-300 shrink-0"
+        className="flex items-center justify-between px-3 py-3 sm:px-6 sm:py-4 border-b dark:border-white/[0.06] border-light-300 shrink-0"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
@@ -281,7 +281,7 @@ export default function ChatPanel({ repoId, onFileClick }: ChatPanelProps) {
       </motion.div>
 
       {/* Messages */}
-      <div ref={messagesContainerRef} className="flex-1 min-h-0 overflow-y-auto px-6 py-6 space-y-8" style={{ overscrollBehavior: 'contain' }}>
+      <div ref={messagesContainerRef} className="flex-1 min-h-0 overflow-y-auto px-3 py-4 sm:px-6 sm:py-6 space-y-4 sm:space-y-8" style={{ overscrollBehavior: 'contain' }}>
         <AnimatePresence mode="wait">
         {chatMessages.length === 0 ? (
           <motion.div
@@ -294,17 +294,17 @@ export default function ChatPanel({ repoId, onFileClick }: ChatPanelProps) {
           >
             {/* Agent avatar */}
             <motion.div
-              className="w-20 h-20 rounded-2xl dark:bg-gradient-to-br dark:from-neon-cyan/20 dark:to-neon-magenta/20 bg-gradient-to-br from-orange-500/15 to-amber-500/15 flex items-center justify-center mb-5 border dark:border-neon-cyan/20 border-orange-500/20 shadow-lg dark:shadow-neon-cyan/10 shadow-orange-500/10"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl dark:bg-gradient-to-br dark:from-neon-cyan/20 dark:to-neon-magenta/20 bg-gradient-to-br from-orange-500/15 to-amber-500/15 flex items-center justify-center mb-5 border dark:border-neon-cyan/20 border-orange-500/20 shadow-lg dark:shadow-neon-cyan/10 shadow-orange-500/10"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, ease: 'easeOut' }}
             >
-              <Sparkles className="w-10 h-10 dark:text-neon-cyan text-orange-500" />
+              <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 dark:text-neon-cyan text-orange-500" />
             </motion.div>
             
             {/* Greeting */}
             <motion.h3
-              className="text-2xl font-semibold dark:text-white text-dark-800 mb-1.5"
+              className="text-xl sm:text-2xl font-semibold dark:text-white text-dark-800 mb-1.5"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15, duration: 0.4 }}
@@ -327,7 +327,7 @@ export default function ChatPanel({ repoId, onFileClick }: ChatPanelProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="space-y-8"
+            className="space-y-4 sm:space-y-8"
           >
           {chatMessages.map((msg, i) => (
             <motion.div
@@ -353,16 +353,16 @@ export default function ChatPanel({ repoId, onFileClick }: ChatPanelProps) {
               )}
               <div
                 className={cn(
-                  'max-w-[85%]',
+                  'max-w-[90%] sm:max-w-[85%]',
                   msg.role === 'user'
-                    ? 'rounded-2xl px-5 py-4 dark:bg-white/[0.06] bg-light-200/80 dark:text-white/90 text-dark-800'
+                    ? 'rounded-2xl px-3.5 py-3 sm:px-5 sm:py-4 dark:bg-white/[0.06] bg-light-200/80 dark:text-white/90 text-dark-800'
                     : ''
                 )}
               >
                 {msg.role === 'user' ? (
-                  <p className="text-[15px] whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                  <p className="text-sm sm:text-[15px] whitespace-pre-wrap leading-relaxed">{msg.content}</p>
                 ) : (
-                  <div className="text-[15px] prose dark:prose-invert prose-sm max-w-none prose-headings:mt-4 prose-headings:mb-2 dark:prose-headings:text-dark-100 prose-headings:text-dark-800 prose-headings:font-semibold prose-p:my-2 dark:prose-p:text-dark-200 prose-p:text-dark-600 prose-p:leading-relaxed prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 dark:prose-li:text-dark-200 prose-li:text-dark-600 dark:prose-code:bg-dark-700/50 prose-code:bg-light-200 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md dark:prose-code:text-neon-cyan prose-code:text-orange-600 prose-code:font-medium prose-code:text-[13px] dark:prose-pre:bg-dark-950 prose-pre:bg-light-100 prose-pre:border dark:prose-pre:border-white/[0.06] prose-pre:border-light-300 prose-pre:rounded-lg dark:prose-a:text-neon-cyan prose-a:text-orange-500 prose-a:no-underline hover:prose-a:underline dark:prose-strong:text-dark-100 prose-strong:text-dark-800">
+                  <div className="text-sm sm:text-[15px] prose dark:prose-invert prose-sm max-w-none prose-headings:mt-4 prose-headings:mb-2 dark:prose-headings:text-dark-100 prose-headings:text-dark-800 prose-headings:font-semibold prose-p:my-2 dark:prose-p:text-dark-200 prose-p:text-dark-600 prose-p:leading-relaxed prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 dark:prose-li:text-dark-200 prose-li:text-dark-600 dark:prose-code:bg-dark-700/50 prose-code:bg-light-200 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md dark:prose-code:text-neon-cyan prose-code:text-orange-600 prose-code:font-medium prose-code:text-[13px] dark:prose-pre:bg-dark-950 prose-pre:bg-light-100 prose-pre:border dark:prose-pre:border-white/[0.06] prose-pre:border-light-300 prose-pre:rounded-lg dark:prose-a:text-neon-cyan prose-a:text-orange-500 prose-a:no-underline hover:prose-a:underline dark:prose-strong:text-dark-100 prose-strong:text-dark-800">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {msg.content}
                     </ReactMarkdown>
@@ -413,8 +413,8 @@ export default function ChatPanel({ repoId, onFileClick }: ChatPanelProps) {
                   </div>
                 </div>
               </div>
-              <div className="dark:bg-white/[0.04] bg-white border dark:border-white/[0.06] border-light-300 rounded-2xl px-5 py-4 shadow-sm">
-                <div className="flex items-center gap-2 text-[15px] dark:text-dark-300 text-dark-500">
+              <div className="dark:bg-white/[0.04] bg-white border dark:border-white/[0.06] border-light-300 rounded-2xl px-3.5 py-3 sm:px-5 sm:py-4 shadow-sm">
+                <div className="flex items-center gap-2 text-sm sm:text-[15px] dark:text-dark-300 text-dark-500">
                   <span>Thinking</span>
                   <TypingDots />
                 </div>
@@ -436,7 +436,7 @@ export default function ChatPanel({ repoId, onFileClick }: ChatPanelProps) {
               <div className="w-8 h-8 rounded-lg bg-red-500/15 flex items-center justify-center flex-shrink-0 mt-1">
                 <AlertCircle className="w-4 h-4 text-red-500" />
               </div>
-              <div className="bg-red-500/[0.08] border border-red-500/20 rounded-2xl px-5 py-4 shadow-sm max-w-[85%]">
+              <div className="bg-red-500/[0.08] border border-red-500/20 rounded-2xl px-3.5 py-3 sm:px-5 sm:py-4 shadow-sm max-w-[90%] sm:max-w-[85%]">
                 <p className="text-sm text-red-400">{chatError}</p>
                 <button
                   onClick={() => setChatError(null)}
@@ -453,7 +453,7 @@ export default function ChatPanel({ repoId, onFileClick }: ChatPanelProps) {
       </div>
 
       {/* Input area */}
-      <form ref={formRef} onSubmit={handleSubmit} className="relative px-4 pb-4 pt-2 shrink-0">
+        <form ref={formRef} onSubmit={handleSubmit} className="relative px-3 pb-3 sm:px-4 sm:pb-4 pt-2 shrink-0">
         {/* Command palette */}
         <AnimatePresence>
           {showCommandPalette && (
@@ -569,10 +569,10 @@ export default function ChatPanel({ repoId, onFileClick }: ChatPanelProps) {
         </div>
       </form>
 
-      {/* Mouse-following gradient glow */}
+      {/* Mouse-following gradient glow — desktop only */}
       {inputFocused && (
         <motion.div
-          className="absolute w-[50rem] h-[50rem] rounded-full pointer-events-none z-0 opacity-[0.03] bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 blur-[96px]"
+          className="hidden sm:block absolute w-[50rem] h-[50rem] rounded-full pointer-events-none z-0 opacity-[0.03] bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 blur-[96px]"
           animate={{
             x: mousePosition.x - 400,
             y: mousePosition.y - 400,

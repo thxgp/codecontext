@@ -43,14 +43,14 @@ export default function Dashboard() {
 
   return (
     <div className="warm-filter h-full w-full dark:bg-dark-900 bg-light-50 overflow-y-auto">
-    <div className="max-w-6xl mx-auto px-6 py-8">
+    <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
       <CursorGlow />
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold dark:text-white text-light-900">Your Repositories</h1>
           <p className="dark:text-dark-400 text-light-500 mt-1">Import and explore codebases</p>
         </div>
-        <Button onClick={() => setShowImport(!showImport)}>
+        <Button onClick={() => setShowImport(!showImport)} className="w-full sm:w-auto">
           <Plus className="w-5 h-5 mr-2" />
           Import Repository
         </Button>
@@ -58,9 +58,9 @@ export default function Dashboard() {
 
       {/* Import form */}
       {showImport && (
-        <div className="dark:bg-dark-800 bg-white rounded-xl p-6 mb-8 dark:border-neon-cyan/10 border-light-200 border">
+        <div className="dark:bg-dark-800 bg-white rounded-xl p-4 sm:p-6 mb-8 dark:border-neon-cyan/10 border-light-200 border">
           <h2 className="text-lg font-semibold mb-4 dark:text-white text-light-900">Import a Repository</h2>
-          <form onSubmit={handleImport} className="flex gap-4">
+          <form onSubmit={handleImport} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1">
               <Input
                 placeholder="https://github.com/owner/repo"
@@ -69,12 +69,14 @@ export default function Dashboard() {
                 error={error}
               />
             </div>
-            <Button type="submit" isLoading={importing}>
-              Import
-            </Button>
-            <Button type="button" variant="ghost" onClick={() => setShowImport(false)}>
-              Cancel
-            </Button>
+            <div className="flex gap-3">
+              <Button type="submit" isLoading={importing} className="flex-1 sm:flex-initial">
+                Import
+              </Button>
+              <Button type="button" variant="ghost" onClick={() => setShowImport(false)} className="flex-1 sm:flex-initial">
+                Cancel
+              </Button>
+            </div>
           </form>
         </div>
       )}
@@ -85,10 +87,10 @@ export default function Dashboard() {
           <div className="animate-spin w-8 h-8 border-2 dark:border-neon-cyan border-light-600 border-t-transparent rounded-full" />
         </div>
       ) : repos.length === 0 ? (
-        <div className="text-center py-20 dark:bg-dark-800 bg-white rounded-xl dark:border-neon-cyan/10 border-light-200 border">
+        <div className="text-center py-12 sm:py-20 dark:bg-dark-800 bg-white rounded-xl dark:border-neon-cyan/10 border-light-200 border">
           <p className="text-xl dark:text-dark-300 text-light-600 mb-4">No repositories yet</p>
           <p className="dark:text-dark-400 text-light-500 mb-6">Import your first repository to get started</p>
-          <Button onClick={() => setShowImport(true)}>
+          <Button onClick={() => setShowImport(true)} className="w-full sm:w-auto mx-auto">
             <Plus className="w-5 h-5 mr-2" />
             Import Repository
           </Button>
@@ -98,14 +100,14 @@ export default function Dashboard() {
           {repos.map((repo) => (
             <div
               key={repo.id}
-              className="dark:bg-dark-800 bg-white rounded-xl p-6 dark:hover:bg-dark-750 hover:bg-light-50 transition-colors dark:border-neon-cyan/5 border-light-200 border dark:hover:border-neon-cyan/20 hover:border-light-300"
+              className="dark:bg-dark-800 bg-white rounded-xl p-4 sm:p-6 dark:hover:bg-dark-750 hover:bg-light-50 transition-colors dark:border-neon-cyan/5 border-light-200 border dark:hover:border-neon-cyan/20 hover:border-light-300"
             >
               <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-2 flex-wrap">
                     <button
                       onClick={() => navigate(`/repo/${repo.id}`)}
-                      className="text-xl font-semibold dark:hover:text-neon-cyan hover:text-light-700 transition-colors dark:text-white text-light-900"
+                      className="text-lg sm:text-xl font-semibold dark:hover:text-neon-cyan hover:text-light-700 transition-colors dark:text-white text-light-900 truncate"
                     >
                       {repo.full_name}
                     </button>
@@ -116,7 +118,7 @@ export default function Dashboard() {
                     <p className="dark:text-dark-300 text-light-500 mb-3">{repo.description}</p>
                   )}
                   
-                  <div className="flex items-center gap-4 text-sm dark:text-dark-400 text-light-500">
+                  <div className="flex items-center gap-2 sm:gap-4 flex-wrap text-sm dark:text-dark-400 text-light-500">
                     {(repo.frameworks || []).length > 0 && (
                       <span className="flex items-center gap-1">
                         {(repo.frameworks || []).slice(0, 3).map((f, i) => (
@@ -131,19 +133,19 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   <a
                     href={repo.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 dark:text-dark-400 text-light-500 dark:hover:text-white hover:text-light-800 dark:hover:bg-dark-700 hover:bg-light-200 rounded-lg transition-colors"
+                    className="min-w-[44px] min-h-[44px] flex items-center justify-center dark:text-dark-400 text-light-500 dark:hover:text-white hover:text-light-800 dark:hover:bg-dark-700 hover:bg-light-200 rounded-lg transition-colors"
                     title="View on GitHub"
                   >
                     <ExternalLink className="w-5 h-5" />
                   </a>
                   <button
                     onClick={() => handleDelete(repo.id, repo.full_name)}
-                    className="p-2 dark:text-dark-400 text-light-500 hover:text-red-400 dark:hover:bg-dark-700 hover:bg-red-50 rounded-lg transition-colors"
+                    className="min-w-[44px] min-h-[44px] flex items-center justify-center dark:text-dark-400 text-light-500 hover:text-red-400 dark:hover:bg-dark-700 hover:bg-red-50 rounded-lg transition-colors"
                     title="Delete"
                   >
                     <Trash2 className="w-5 h-5" />

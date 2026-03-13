@@ -34,13 +34,13 @@ export default function FileTree({ node, onFileSelect, selectedPath, level = 0 }
       <button
         onClick={() => node.path && onFileSelect(node.path)}
         className={clsx(
-          'w-full flex items-center gap-2 py-1.5 rounded-md text-sm text-left relative group',
+          'w-full flex items-center gap-2 py-1.5 min-h-[44px] rounded-md text-sm text-left relative group',
           'transition-all duration-150',
           isSelected
             ? 'dark:bg-neon-cyan/15 bg-orange-500/15 dark:text-white text-dark-800'
             : 'dark:text-dark-300 text-dark-600 dark:hover:bg-white/[0.04] hover:bg-dark-100 dark:hover:text-white hover:text-dark-800'
         )}
-        style={{ paddingLeft: `${level * 16 + 12}px`, paddingRight: '8px' }}
+        style={{ paddingLeft: `${level * 12 + 8}px`, paddingRight: '8px' }}
       >
         {isSelected && (
           <div className="absolute left-0 top-1 bottom-1 w-[2px] rounded-full dark:bg-neon-cyan bg-orange-500" />
@@ -56,16 +56,16 @@ export default function FileTree({ node, onFileSelect, selectedPath, level = 0 }
       {level > 0 && (
         <div
           className="absolute top-0 bottom-0 w-px dark:bg-white/[0.04] bg-dark-200"
-          style={{ left: `${level * 16 + 6}px` }}
+          style={{ left: `${level * 12 + 4}px` }}
         />
       )}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={clsx(
-          'w-full flex items-center gap-2 py-1.5 rounded-md text-sm text-left',
+          'w-full flex items-center gap-2 py-1.5 min-h-[44px] rounded-md text-sm text-left',
           'dark:text-dark-200 text-dark-700 dark:hover:bg-white/[0.04] hover:bg-dark-100 dark:hover:text-white hover:text-dark-800 transition-all duration-150'
         )}
-        style={{ paddingLeft: `${level * 16 + 12}px`, paddingRight: '8px' }}
+        style={{ paddingLeft: `${level * 12 + 8}px`, paddingRight: '8px' }}
       >
         <span className="flex-shrink-0 dark:text-dark-500 text-dark-400">
           {isOpen ? (

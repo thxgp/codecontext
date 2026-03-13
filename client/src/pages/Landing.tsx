@@ -21,7 +21,7 @@ export default function Landing() {
     <div className="min-h-screen dark:bg-dark-900 bg-white">
       <CursorGlow opacity={0.2} size={45} />
       {/* Hero */}
-      <div className="relative pt-20 pb-32 overflow-hidden">
+      <div className="relative pt-12 pb-16 sm:pt-20 sm:pb-32 overflow-hidden">
         <AnimatedGridPattern
           numSquares={30}
           maxOpacity={0.15}
@@ -29,36 +29,39 @@ export default function Landing() {
           repeatDelay={1}
           className="z-0 [mask-image:radial-gradient(700px_circle_at_center,white,transparent)] dark:fill-orange-500/30 dark:stroke-orange-500/30 fill-orange-500/[0.08] stroke-orange-500/[0.08]"
         />
-        <nav className="relative z-10 flex items-center justify-between mb-20 max-w-7xl mx-auto px-6">
+        <nav className="relative z-10 flex items-center justify-between mb-10 sm:mb-20 max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center gap-2">
             <Code className="w-7 h-7 dark:text-neon-cyan text-orange-500" />
             <span className="text-2xl font-bold gradient-text">CodeContext</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-lg dark:bg-dark-700 bg-stone-100 dark:hover:bg-dark-600 hover:bg-stone-200 dark:text-neon-cyan text-gray-600 transition-all"
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg dark:bg-dark-700 bg-stone-100 dark:hover:bg-dark-600 hover:bg-stone-200 dark:text-neon-cyan text-gray-600 transition-all"
               title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <Button onClick={login} size="lg">
+            <Button onClick={login} size="lg" className="hidden sm:flex">
               <Github className="w-5 h-5 mr-2" />
               Sign in with GitHub
+            </Button>
+            <Button onClick={login} size="lg" className="flex sm:hidden min-w-[44px] min-h-[44px] !px-3">
+              <Github className="w-5 h-5" />
             </Button>
           </div>
         </nav>
 
-        <div className="relative z-10 text-center max-w-5xl mx-auto px-6">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 dark:text-white text-gray-900 tracking-tight">
+        <div className="relative z-10 text-center max-w-5xl mx-auto px-4 sm:px-6">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-6 dark:text-white text-gray-900 tracking-tight">
             Understand any codebase<br className="hidden md:block" />
             <span className="gradient-text">in hours, not weeks</span>
           </h1>
-          <p className="text-xl dark:text-dark-400 text-gray-500 mb-10 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl dark:text-dark-400 text-gray-500 mb-8 sm:mb-10 max-w-2xl mx-auto">
             AI-powered codebase exploration. Ask questions in plain English, 
             get answers with file references. Stop drowning in unfamiliar code.
           </p>
-          <Button onClick={login} size="lg" className="text-lg px-8 py-4">
+          <Button onClick={login} size="lg" className="text-base sm:text-lg px-6 py-3 sm:px-8 sm:py-4">
             Get Started Free
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
@@ -66,13 +69,13 @@ export default function Landing() {
       </div>
 
       {/* Features */}
-      <div className="relative z-20 dark:bg-dark-800 bg-stone-50 py-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-16 dark:text-white text-gray-900">
+      <div className="relative z-20 dark:bg-dark-800 bg-stone-50 py-12 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-16 dark:text-white text-gray-900">
             Everything you need to onboard fast
           </h2>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-4 sm:gap-8">
             <FeatureCard
               icon={<MessageSquare className="w-8 h-8 dark:text-neon-cyan text-neon-cyan" />}
               title="AI Q&A"
@@ -93,7 +96,7 @@ export default function Landing() {
       </div>
 
       {/* How it works */}
-      <div className="relative z-20 py-24 dark:bg-dark-900 bg-white overflow-hidden">
+      <div className="relative z-20 py-12 sm:py-24 dark:bg-dark-900 bg-white overflow-hidden">
         <AnimatedGridPattern
           numSquares={25}
           maxOpacity={0.12}
@@ -101,12 +104,12 @@ export default function Landing() {
           repeatDelay={1}
           className="z-0 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)] dark:fill-orange-500/30 dark:stroke-orange-500/30 fill-orange-500/[0.08] stroke-orange-500/[0.08]"
         />
-        <div className="relative z-10 max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-16 dark:text-white text-gray-900">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-16 dark:text-white text-gray-900">
             How it works
           </h2>
           
-          <div className="grid md:grid-cols-3 gap-12">
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-12">
             <Step number={1} title="Connect GitHub" description="Sign in with GitHub and import any repository you have access to." />
             <Step number={2} title="AI Analysis" description="We analyze your codebase, generate summaries, and build a semantic index." />
             <Step number={3} title="Start Exploring" description="Ask questions, browse files, and understand the architecture instantly." />
@@ -115,15 +118,15 @@ export default function Landing() {
       </div>
 
       {/* CTA */}
-      <div className="relative z-20 py-24 dark:bg-dark-800 bg-stone-50">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6 dark:text-white text-gray-900">
+      <div className="relative z-20 py-12 sm:py-24 dark:bg-dark-800 bg-stone-50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+          <h2 className="text-2xl sm:text-4xl font-bold mb-6 dark:text-white text-gray-900">
             Ready to understand code faster?
           </h2>
-          <p className="text-xl dark:text-dark-400 text-gray-500 mb-8">
+          <p className="text-base sm:text-xl dark:text-dark-400 text-gray-500 mb-8">
             Free to use. No credit card required.
           </p>
-          <Button onClick={login} size="lg" className="text-lg px-8 py-4">
+          <Button onClick={login} size="lg" className="text-base sm:text-lg px-6 py-3 sm:px-8 sm:py-4">
             <Github className="w-5 h-5 mr-2" />
             Sign in with GitHub
           </Button>
@@ -132,7 +135,7 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="relative z-20 py-8 border-t dark:border-dark-700 border-stone-200 dark:bg-dark-900 bg-white">
-        <div className="max-w-7xl mx-auto px-6 text-center dark:text-dark-500 text-gray-400 text-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center dark:text-dark-500 text-gray-400 text-sm">
           CodeContext &copy; {new Date().getFullYear()}
         </div>
       </footer>
@@ -145,7 +148,7 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="fixed bottom-24 right-6 z-50 w-80 rounded-2xl dark:bg-dark-800 bg-white border dark:border-dark-600 border-stone-200 shadow-2xl dark:shadow-orange-500/10 overflow-hidden"
+            className="fixed bottom-24 right-3 sm:right-6 z-50 w-[calc(100vw-1.5rem)] sm:w-80 max-w-80 rounded-2xl dark:bg-dark-800 bg-white border dark:border-dark-600 border-stone-200 shadow-2xl dark:shadow-orange-500/10 overflow-hidden"
           >
             <div className="flex items-center justify-between px-5 pt-5 pb-2">
               <div className="flex items-center gap-3">
@@ -215,7 +218,7 @@ export default function Landing() {
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
-    <div className="dark:bg-dark-700 bg-white rounded-xl p-6 border dark:border-dark-600 border-stone-200 dark:hover:border-neon-cyan/30 hover:border-orange-300 transition-colors shadow-sm hover:shadow-md">
+    <div className="dark:bg-dark-700 bg-white rounded-xl p-4 sm:p-6 border dark:border-dark-600 border-stone-200 dark:hover:border-neon-cyan/30 hover:border-orange-300 transition-colors shadow-sm hover:shadow-md">
       <div className="mb-4">{icon}</div>
       <h3 className="text-xl font-semibold mb-2 dark:text-white text-gray-900">{title}</h3>
       <p className="dark:text-dark-400 text-gray-500">{description}</p>

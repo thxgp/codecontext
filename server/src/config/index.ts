@@ -7,7 +7,9 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   supabase: {
     url: process.env.SUPABASE_URL || '',
-    anonKey: process.env.SUPABASE_ANON_KEY || '',
+    anonKey: process.env.SUPABASE_ANON_KEY && process.env.SUPABASE_ANON_KEY.length > 200
+      ? process.env.SUPABASE_ANON_KEY
+      : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uamx5cnplYnlvcmdia3ZoenZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNjM3NDcsImV4cCI6MjA4ODYzOTc0N30.x9db2zvSDmswugkgiu_PoH95RQ7StcTGL2eagZI9iFs',
   },
   github: {
     clientId: process.env.GITHUB_CLIENT_ID || '',
